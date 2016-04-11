@@ -2,8 +2,8 @@
 
 #get date from target
 #targetDate= stat -f "%d" $(Pathtotar )
-targetcomp=back.tar.gz
-target=back.tar
+target_dir=$(cat target_dir.txt)
+
 depend_list=$(cat direct_list.txt)
 
 if (test -e $targetcomp); then #if the target is zipped already
@@ -17,11 +17,15 @@ fi
 for i in $depend_list
 do
     echo $i
-#do search in all directories
+    
+    name_base_t="${i##*/}"
+    gg=$name_base_t[0-9]*.tar*
     #dirs=$(#ls -d)
-    g="$i.snar"
-    tar --create --file=archive.*.tar --listed-incremental=$i.snar $i.tar
-    tar uvf $target $i
+    num=$(ls $gg | wc -l)
+        
+    tar --create --file=$name_base_t$num.tar --listed-incremental=$name_base_t.snar $i
+    
+    gzip $name_base_t$num.tar
 
 done
 
